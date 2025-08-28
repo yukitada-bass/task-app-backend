@@ -29,20 +29,27 @@ export class AuthController {
   async loginHandler(
     @Body() credentials: Credentials,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<{ accessToken: string }> {
+  ): Promise<{ message: string }> {
     const { accessToken, refreshToken } =
       await this.AuthService.login(credentials);
 
     // リフレッシュトークンは HttpOnly Cookie にセット
     res.cookie('refresh_token', refreshToken, {
       httpOnly: true,
-      secure: true, // 本番では true
-      sameSite: 'none', // 本番では 'strict'
+      secure: false, // 本番では true
+      sameSite: 'lax', // 本番では 'strict'
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
 
-    // アクセストークンは return
-    return { accessToken };
+    // アクセストークンも HttpOnly Cookie にセット
+    res.cookie('access_token', accessToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 1000,
+    });
+
+    return { message: 'Login successful' };
   }
 
   @UseGuards(AuthGuard('jwt-refresh'))

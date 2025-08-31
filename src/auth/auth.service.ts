@@ -105,5 +105,10 @@ export class AuthService {
   }
 
   // ロウアウト処理
-  async logout() {}
+  async logout(refreshToken: string): Promise<void> {
+    await this.prisma.user.updateMany({
+    where: { refreshToken },
+    data: { refreshToken: null },
+  });
+  }
 }

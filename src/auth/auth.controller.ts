@@ -12,6 +12,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { User } from '@prisma/client';
 import { AuthService } from './auth.service';
 import { Credentials } from './dto/credentials.dto';
+import type { Request } from 'express';
 import type { Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -57,5 +58,19 @@ export class AuthController {
   @Post('refresh')
   async refresh(@Req() req: any): Promise<{ accessToken: string }> {
     return await this.AuthService.refresh(req.user);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('logout')
+  async logoutHandler(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<{ message: string }> {
+    const { refresh_token } = req.cookies;
+    await this.AuthService.logout(refresh_token);
+    res.clearCookie('access_token');
+    res.clearCookie('refresh_token');
+
+    return { message: 'Logout successful' };
   }
 }

@@ -26,6 +26,16 @@ export class CardService {
     });
   }
 
+  async addMember(cardId: string, userId: string) {
+    return this.prismaService.cardMember.create({
+      data: {
+        cardId,
+        userId,
+      },
+      include: { user: true, card: true },
+    });
+  }
+
   findAll() {
     return `This action returns all card`;
   }

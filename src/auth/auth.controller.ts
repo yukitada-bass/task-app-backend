@@ -15,6 +15,7 @@ import { Credentials } from './dto/credentials.dto';
 import type { Request } from 'express';
 import type { Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
+import { Payload } from 'src/types/Payload';
 
 @Controller('auth')
 export class AuthController {
@@ -30,8 +31,8 @@ export class AuthController {
   async loginHandler(
     @Body() credentials: Credentials,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<{ message: string }> {
-    const { accessToken, refreshToken } =
+  ): Promise<{ payload: Payload }> {
+    const { accessToken, refreshToken, payload } =
       await this.AuthService.login(credentials);
 
     // リフレッシュトークンは HttpOnly Cookie にセット
@@ -50,7 +51,7 @@ export class AuthController {
       maxAge: 60 * 60 * 1000,
     });
 
-    return { message: 'Login successful' };
+    return { payload };
   }
 
   @UseGuards(AuthGuard('jwt-refresh'))

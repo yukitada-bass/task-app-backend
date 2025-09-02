@@ -44,7 +44,7 @@ export class AuthService {
   // ログイン処理
   async login(
     data: Credentials,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
+  ): Promise<{ accessToken: string; refreshToken: string; payload: Payload }> {
     const { email, password } = data;
     const user = await this.prisma.user.findUnique({
       where: { email },
@@ -86,6 +86,7 @@ export class AuthService {
     return {
       accessToken,
       refreshToken,
+      payload,
     };
   }
 
@@ -107,8 +108,8 @@ export class AuthService {
   // ロウアウト処理
   async logout(refreshToken: string): Promise<void> {
     await this.prisma.user.updateMany({
-    where: { refreshToken },
-    data: { refreshToken: null },
-  });
+      where: { refreshToken },
+      data: { refreshToken: null },
+    });
   }
 }

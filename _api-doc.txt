@@ -1,0 +1,112 @@
+─────────────────────────────────────────────
+認証関連
+─────────────────────────────────────────────
+POST   /auth/login
+       - Body: { email, password }
+       - 認証: 不要
+       - 説明: ログインしアクセストークン・リフレッシュトークン発行
+
+POST   /auth/signup
+       - Body: { username, email, password }
+       - 認証: 不要
+       - 説明: 新規ユーザー登録
+
+POST   /auth/logout
+       - Cookie: refresh_token (HttpOnly)
+       - 認証: 必須 (クッキー送信)
+       - 説明: リフレッシュトークンをDBから削除しクッキー削除
+
+POST   /auth/refresh
+       - Cookie: refresh_token (HttpOnly)
+       - 認証: 不要（クッキーで認証）
+       - 説明: アクセストークン再発行
+
+─────────────────────────────────────────────
+ユーザー関連 /u/[userId]
+─────────────────────────────────────────────
+GET    /users/:userId
+       - 認証: 必須
+       - 説明: ユーザープロフィール取得
+
+PATCH  /users/:userId
+       - Body: { username?, email?, profile? }
+       - 認証: 必須
+       - 説明: プロフィール更新
+
+GET    /users/:userId/boards
+       - 認証: 必須
+       - 説明: ユーザーの全ボード一覧取得
+
+GET    /users/:userId/cards
+       - 認証: 必須
+       - 説明: ユーザーの全カード一覧取得
+
+─────────────────────────────────────────────
+ワークスペース関連 /w/[workspaceId]
+─────────────────────────────────────────────
+GET    /workspaces/:workspaceId
+       - 認証: 必須
+       - 説明: ワークスペース情報取得
+
+PATCH  /workspaces/:workspaceId
+       - Body: { name?, description? }
+       - 認証: 必須
+       - 説明: ワークスペース情報更新
+
+DELETE /workspaces/:workspaceId
+       - 認証: 必須
+       - 説明: ワークスペース削除
+
+GET    /workspaces/:workspaceId/members
+       - 認証: 必須
+       - 説明: ワークスペースメンバー一覧取得
+
+POST   /workspaces/:workspaceId/members
+       - Body: { userId }
+       - 認証: 必須
+       - 説明: ワークスペースにメンバー追加
+
+DELETE /workspaces/:workspaceId/members/:userId
+       - 認証: 必須
+       - 説明: ワークスペースからメンバー削除
+
+─────────────────────────────────────────────
+ボード関連 /b/[boardId]
+─────────────────────────────────────────────
+GET    /boards/:boardId
+       - 認証: 必須
+       - 説明: ボード詳細取得（カンバン表示用）
+
+PATCH  /boards/:boardId
+       - Body: { title?, description? }
+       - 認証: 必須
+       - 説明: ボード更新
+
+DELETE /boards/:boardId
+       - 認証: 必須
+       - 説明: ボード削除
+
+GET    /boards/:boardId/cards
+       - 認証: 必須
+       - 説明: ボード内カード一覧取得（テーブル表示用）
+
+POST   /boards/:boardId/cards
+       - Body: { title, description?, assigneeId?, dueDate? }
+       - 認証: 必須
+       - 説明: ボードにカード追加
+
+─────────────────────────────────────────────
+カード関連 /c/[cardId]
+─────────────────────────────────────────────
+GET    /cards/:cardId
+       - 認証: 必須
+       - 説明: カード詳細取得（モーダル表示用）
+
+PATCH  /cards/:cardId
+       - Body: { title?, description?, status?, assigneeId?, dueDate? }
+       - 認証: 必須
+       - 説明: カード更新
+
+DELETE /cards/:cardId
+       - 認証: 必須
+       - 説明: カード削除

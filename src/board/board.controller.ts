@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { BoardService } from './board.service';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
@@ -15,13 +15,14 @@ export class BoardController {
   }
 
   @Get()
-  findAll() {
-    return this.boardService.findAll();
+  findAll(@Req() req: any) {
+    const {id :userId} = req.user;
+    return this.boardService.findAll(userId);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.boardService.findOne(+id);
+  @Get(':workspaceId')
+  findAllByWorkspaceId(@Param('workspaceId') workspaceId: string) {
+    return this.boardService.findAllByWorkspaceId(workspaceId);
   }
 
   @Patch(':id')

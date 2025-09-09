@@ -13,12 +13,34 @@ export class BoardService {
     });
   }
 
-  findAll() {
-    return `This action returns all board`;
+  findAll(userId: string) {
+    return this.prismaService.board.findMany({
+      where: {
+        workspace: {
+          members: {
+            some: {
+              userId: userId,
+            },
+          },
+        },
+      },
+      include: {
+        workspace: {
+          select: {
+            id: true,
+            title: true,
+          },
+        },
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} board`;
+  findAllByWorkspaceId(workspaceId: string) {
+    return this.prismaService.board.findMany({
+      where: {
+        workspaceId,
+      },
+    });
   }
 
   update(id: number, updateBoardDto: UpdateBoardDto) {

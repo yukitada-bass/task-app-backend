@@ -7,22 +7,28 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class WorkspaceService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(createWorkspaceDto: CreateWorkspaceDto, userId:string) {
+  async create(createWorkspaceDto: CreateWorkspaceDto, userId: string) {
     return this.prismaService.workspace.create({
       data: {
         title: createWorkspaceDto.title,
         members: {
-          create: [
-            { userId },
-          ],
+          create: [{ userId }],
         },
       },
       include: { members: true },
     });
   }
 
-  findAll() {
-    return `This action returns all workspace`;
+  findAll(userId: string) {
+    return this.prismaService.workspace.findMany({
+      where: {
+        members: {
+          some: {
+            userId: userId,
+          },
+        },
+      },
+    });
   }
 
   findOne(id: number) {

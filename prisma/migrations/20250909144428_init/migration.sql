@@ -58,7 +58,7 @@ CREATE TABLE "public"."List" (
 
 -- CreateTable
 CREATE TABLE "public"."Card" (
-    "id" UUID NOT NULL,
+    "id" TEXT NOT NULL,
     "title" VARCHAR(255) NOT NULL,
     "description" TEXT,
     "listId" UUID NOT NULL,
@@ -73,7 +73,7 @@ CREATE TABLE "public"."Card" (
 -- CreateTable
 CREATE TABLE "public"."CardMember" (
     "id" UUID NOT NULL,
-    "cardId" UUID NOT NULL,
+    "cardId" TEXT NOT NULL,
     "userId" UUID NOT NULL,
 
     CONSTRAINT "CardMember_pkey" PRIMARY KEY ("id")

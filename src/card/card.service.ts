@@ -8,7 +8,7 @@ export class CardService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(createListDto: CreateCardDto) {
-    const { title, description, listId } = createListDto;
+    const { id, title, description, listId } = createListDto;
     const maxPosition = await this.prismaService.card.aggregate({
       _max: { position: true },
       where: { listId },
@@ -18,11 +18,36 @@ export class CardService {
 
     return await this.prismaService.card.create({
       data: {
+        id,
         title,
         description: description ?? null,
         listId,
         position,
       },
+    });
+  }
+
+  findAllByUserId(userId: string) {
+    return this.prismaService.card.findMany({
+      where: {
+        members: {
+          some: {
+            userId,
+          },
+        },
+      },
+    });
+  }
+
+  findAllByListId(listId: string) {
+    return this.prismaService.card.findMany({
+      where: { listId },
+    });
+  }
+
+  findOne(id: string) {
+    return this.prismaService.card.findUnique({
+      where: { id },
     });
   }
 
@@ -34,14 +59,6 @@ export class CardService {
       },
       include: { user: true, card: true },
     });
-  }
-
-  findAll() {
-    return `This action returns all card`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} card`;
   }
 
   update(id: number, updateCardDto: UpdateCardDto) {

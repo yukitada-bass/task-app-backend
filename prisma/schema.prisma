@@ -68,7 +68,7 @@ model List {
 }
 
 model Card {
-  id          String   @id @default(uuid()) @db.Uuid
+  id          String   @id
   title       String   @db.VarChar(255)
   description String?  @db.Text
   listId      String   @db.Uuid
@@ -82,7 +82,7 @@ model Card {
 
 model CardMember {
   id      String @id @default(uuid()) @db.Uuid
-  cardId  String @db.Uuid
+  cardId  String
   card    Card   @relation(fields: [cardId], references: [id])
   userId  String @db.Uuid
   user    User   @relation(fields: [userId], references: [id])
